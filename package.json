@@ -1,0 +1,26 @@
+{
+  "name": "iot-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.5.4",
+    "mqtt": "^5.15.2",
+    "next": "16.3.0",
+    "postcss": "^8.5.25",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/react": "19.2.18",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0"
+  }
+}
