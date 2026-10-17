@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Create Next App",
+  title: "Cuttie Dolls IoT Dashboard",
   description: "Live temperature, humidity and relay control over MQTT",
 };
 
