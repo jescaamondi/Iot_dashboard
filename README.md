@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cuttie Dolls IoT Dashboard
 
-## Getting Started
+A real-time web dashboard for an IoT device over MQTT. It shows live temperature and humidity readings, shows whether the device is online, and switches two relays on and off from the browser.
 
-First, run the development server:
+<!-- Add a screenshot here: ![Dashboard](docs/screenshot.png) -->
+
+## Features
+
+- **Live sensor readings.** Temperature and humidity update as soon as the device publishes them.
+- **Relay control.** Turn two relay channels on or off. The button shows the relay's real state, as reported back by the device.
+- **Online status.** The dashboard dims and disables the controls when the device goes offline or the broker connection drops.
+- **Automatic reconnect** to the broker every few seconds after a disconnect.
+
+## How it works
+
+The browser connects straight to an MQTT broker over WebSockets and subscribes to every topic under one root, `Princess/Fashion` by default.
+
+| Topic | Direction | Payload |
+| --- | --- | --- |
+| `<root>/temperature` | device → dashboard | a number, for example `24.5` |
+| `<root>/humidity` | device → dashboard | a number, for example `61` |
+| `<root>/relay1/state`, `<root>/relay2/state` | device → dashboard | `ON` or `OFF` |
+| `<root>/status` | device → dashboard | `online` or `offline` |
+| `<root>/control/relay1`, `<root>/control/relay2` | dashboard → device | `ON` or `OFF` |
+
+The dashboard only *requests* a change on the `control` topics. It updates the button when the device confirms the new state on the `state` topic, so the screen always matches the hardware.
+
+## Run it locally
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill in `.env.local` with your broker details, then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Variable | Description |
+| --- | --- |
+| `NEXT_PUBLIC_MQTT_URL` | The broker's WebSocket URL, starting with `wss://` or `ws://` |
+| `NEXT_PUBLIC_MQTT_USER` | Broker username |
+| `NEXT_PUBLIC_MQTT_PASS` | Broker password |
+| `NEXT_PUBLIC_MQTT_TOPIC_ROOT` | Topic prefix, `Princess/Fashion` by default |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Security note
 
-## Learn More
+Because the browser connects to the broker directly, the MQTT username and password are included in the page and anyone using the dashboard can see them. Give the dashboard its own broker user, and use the broker's access control list (ACL) so that user can only read the sensor and status topics and write to the `control` topics.
 
-To learn more about Next.js, take a look at the following resources:
+## Tools
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js · React · Tailwind CSS · MQTT.js
